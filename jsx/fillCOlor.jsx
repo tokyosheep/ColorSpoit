@@ -2,7 +2,7 @@
     var select = app.activeDocument.selection[0];
     //var specialColor = registerSpotColor();
     //select.fillColor = specialColor;
-    select.fillColor = setCMYKColor(100,47,38,100);
+    select.fillColor = setCMYKColor(100,47,38,0);
 
     
 

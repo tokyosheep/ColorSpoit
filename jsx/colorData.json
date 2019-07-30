@@ -1,0 +1,25 @@
+[
+    {
+        "typename": "RGBColor",
+        "blue": "136",
+        "green": "42",
+        "red": "23",
+        "name": "RGB"
+    },
+    {
+        "cyan": "0",
+        "magenta": "94.9999988079071",
+        "yellow": "0",
+        "black": "0",
+        "typename": "CMYKColor",
+        "name": "aityan"
+    },
+    {
+        "cyan": "100",
+        "magenta": "95",
+        "yellow": "5",
+        "black": "0",
+        "typename": "CMYKColor",
+        "name": "color"
+    }
+]

@@ -13,21 +13,33 @@
 
     <div id="content">                     
         <button id="getColor" class="topcoat-button--large hostFontSize">get color</button>   
-        <button id="reflect" class="topcoat-button--large hostFontSize">be reflected colorr</button>           
+        <button id="reflect" class="topcoat-button--large hostFontSize">be reflected color</button>           
     </div>
     <h3>color object</h3>
     <ul id="colorObj"></ul>
-    
+    <form name="fillType">
+        <label for="" class="topcoat-checkbox">
+            <input type="checkbox" id="fillIn" class="adoptColor">
+            <div class="topcoat-checkbox__checkmark"></div>
+            塗り
+        </label><label for="" class="topcoat-checkbox">
+            <input type="checkbox" id="stroke" class="adoptColor">
+            <div class="topcoat-checkbox__checkmark"></div>
+            線
+        </label>
+    </form> 
+    <input type="text" class="topcoat-text-input" placeholder="name" value="color" id="colorName">
+    <button id="saveJSON" class="topcoat-button--large hostFontSize">save カラーデータ</button>
+    <ul id="savedList"></ul>
     <!-- These are debugging shortcuts.  Class debuglink items only appear in debug mode  -->
     <span class="debuglink" id="reload">Reload</span>
     <span class="debuglink" id="debug">Debug</span>
     <span class="debuglink" id="sources">Sources</span>
     
     <script src="js/libs/CSInterface.js"></script>
-    <script src="js/libs/jquery-2.0.2.min.js"></script>
 
     <script src="js/themeManager.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/dist.js"></script>
 
         
 </body>

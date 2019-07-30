@@ -17,7 +17,13 @@
     width: 100%;
 }
 
+label{
+    display: block;
+}
 
+#savedList ul{
+    margin-top: 20px;
+}
 
 
 /*
