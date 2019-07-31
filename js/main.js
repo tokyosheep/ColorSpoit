@@ -10,6 +10,8 @@ window.onload = () =>{
     const reflect = document.getElementById("reflect");
     const saveJSON = document.getElementById("saveJSON");
     const savedList = document.getElementById("savedList");
+    const adaptObj = document.getElementById("adaptObj");
+    const deleteBtn = document.getElementById("delete"); 
     const fs = require("fs");
     
     const filePath = csInterface.getSystemPath(SystemPath.EXTENSION) +`/js/`;
@@ -17,6 +19,96 @@ window.onload = () =>{
     csInterface.evalScript(`$.evalFile("${extensionRoot}json2.js")`);//json2読み込み
     const json_path = `${extensionRoot}colorData.json`;
     
+    
+    class WriteData{
+        constructor(){
+        }
+        
+        getSelectedColor(){
+            return new Promise((resolve,reject)=>{
+                csInterface.evalScript(`$.evalFile("${extensionRoot}readColor.jsx")`,(o)=>{
+                console.log(obj);    
+                const obj = JSON.parse(o);
+                resolve(obj);    
+                });
+            });
+        }
+        
+        writeOnPanel(obj){
+            removeChildren(colorObj);
+            Object.entries(obj).forEach(([key,value])=>{
+                writeList(colorObj,value,key);
+            });
+        }                       
+    }
+    
+    class PicFromJsx extends WriteData{
+        constructor(btn){
+            super();
+            this.btn = btn;
+            this.btn.addEventListener("click",this);
+        }
+        
+        async handleEvent(){
+            const obj = await this.getSelectedColor();
+            this.writeOnPanel(obj);
+        }
+    }
+    
+    const write = new PicFromJsx(getColor);
+    
+    class PicFromJson extends WriteData{
+        constructor(btn){
+            super();
+            this.btn = btn;
+            this.btn.addEventListener("click",this);
+        }
+        
+        async handleEvent(){
+            const jsonList = Array.from(document.getElementsByClassName("jsonList"));
+            const jsonData = document.getElementsByClassName("jsonData");
+            const obj = {};
+            jsonList.forEach((v,i)=>{
+                if(v.checked){
+                    console.log(jsonData[i]);
+                    const dataSet = Array.from(jsonData[i].getElementsByTagName("li"));
+                    dataSet.forEach(value=>{
+                        console.log(value.dataset.key);
+                        obj[value.dataset.key] = value.dataset.value;
+                    });
+                }
+            });
+            this.writeOnPanel(obj);
+        }
+    }
+    console.log(adaptObj);
+    const fromJson = new PicFromJson(adaptObj);
+    
+    
+    class DeleteJson extends WriteData{
+        constructor(btn){
+            super();
+            this.btn = btn;
+            this.btn.addEventListener("click",this);
+        }
+        
+        async handleEvent(){
+            const jsonList = await readJson();
+            const index = Array.from(document.getElementsByClassName("jsonList")).findIndex(isChecked);
+            function isChecked(value){
+                return value.checked == true;
+            }
+            console.log(index);
+            console.log(jsonList[index]);
+            jsonList.splice(index,1);
+            await writeJson(jsonList);
+            //this.writeOnPanel(jsonList);
+             pickJson.loadJson();
+        }
+    }
+    
+    const deBtn = new DeleteJson(deleteBtn);
+    /*
     getColor.addEventListener("click",()=>{
         csInterface.evalScript(`$.evalFile("${extensionRoot}readColor.jsx")`,(o)=>{
             const obj = JSON.parse(o);
@@ -27,7 +119,7 @@ window.onload = () =>{
             });
         });
     });
-    
+    */
     function removeChildren(parent){
         while(parent.firstChild){
             parent.removeChild(parent.firstChild);
@@ -58,6 +150,7 @@ window.onload = () =>{
             lists.forEach(v=>{
                 colorData[v.dataset.key] = v.dataset.value;
             });
+            console.log(colorData);
             return colorData;
         }
     }
@@ -100,7 +193,8 @@ window.onload = () =>{
             }
             const jsonList = await readJson();
             jsonList.push(colorData);
-            await writeJson(JsonList);
+            await writeJson(jsonList);
+            this.loadJson();
         }
         
         async loadJson(){
@@ -113,6 +207,7 @@ window.onload = () =>{
                 const radioBtn = makeRadio();
                 savedList.appendChild(radioBtn);
                 const ul = document.createElement("ul");
+                ul.classList.add("jsonData");
                 topLi.appendChild(ul);
                 
                 Object.entries(v).forEach(([key,value])=>{
@@ -128,6 +223,7 @@ window.onload = () =>{
         const _input = document.createElement("input");
         _input.type = "radio";
         _input.name = "preset";
+        _input.classList.add("jsonList");
         label.appendChild(_input);
         const div = document.createElement("div");
         div.classList.add("topcoat-radio-button__checkmark");
@@ -145,8 +241,8 @@ window.onload = () =>{
                     csInterface.evalScript(`alert("your preset is saved")`);
                 }
                 resolve(true);
-            })
-        })
+            });
+        });
     }
     
     function readJson(){
@@ -158,7 +254,7 @@ window.onload = () =>{
                 }
                 const objects = JSON.parse(data);
                 resolve(objects);
-            })
+            });
         });
     }
     

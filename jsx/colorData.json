@@ -1,25 +1,25 @@
 [
     {
-        "typename": "RGBColor",
-        "blue": "136",
-        "green": "42",
-        "red": "23",
-        "name": "RGB"
-    },
-    {
-        "cyan": "0",
-        "magenta": "94.9999988079071",
-        "yellow": "0",
-        "black": "0",
-        "typename": "CMYKColor",
-        "name": "aityan"
-    },
-    {
         "cyan": "100",
         "magenta": "95",
         "yellow": "5",
         "black": "0",
         "typename": "CMYKColor",
         "name": "color"
+    },
+    {
+        "cyan": "3.13725508749485",
+        "magenta": "98.8235294818878",
+        "yellow": "41.1764711141586",
+        "black": "0",
+        "typename": "CMYKColor",
+        "name": "fujiwara"
+    },
+    {
+        "red": "255",
+        "green": "208",
+        "blue": "0",
+        "typename": "RGBColor",
+        "name": "yellow"
     }
 ]

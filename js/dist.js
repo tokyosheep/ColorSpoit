@@ -113,12 +113,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -126,6 +120,12 @@ function _nonIterableRest() { throw new TypeError("Invalid attempt to destructur
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
@@ -139,6 +139,8 @@ window.onload = function () {
   var reflect = document.getElementById("reflect");
   var saveJSON = document.getElementById("saveJSON");
   var savedList = document.getElementById("savedList");
+  var adaptObj = document.getElementById("adaptObj");
+  var deleteBtn = document.getElementById("delete");
 
   var fs = __webpack_require__(/*! fs */ "fs");
 
@@ -147,20 +149,246 @@ window.onload = function () {
   csInterface.evalScript("$.evalFile(\"".concat(extensionRoot, "json2.js\")")); //json2読み込み
 
   var json_path = "".concat(extensionRoot, "colorData.json");
-  getColor.addEventListener("click", function () {
-    csInterface.evalScript("$.evalFile(\"".concat(extensionRoot, "readColor.jsx\")"), function (o) {
-      var obj = JSON.parse(o);
-      console.log(obj);
-      removeChildren(colorObj);
-      Object.entries(obj).forEach(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-            key = _ref2[0],
-            value = _ref2[1];
 
-        writeList(colorObj, value, key);
+  var WriteData =
+  /*#__PURE__*/
+  function () {
+    function WriteData() {
+      _classCallCheck(this, WriteData);
+    }
+
+    _createClass(WriteData, [{
+      key: "getSelectedColor",
+      value: function getSelectedColor() {
+        return new Promise(function (resolve, reject) {
+          csInterface.evalScript("$.evalFile(\"".concat(extensionRoot, "readColor.jsx\")"), function (o) {
+            console.log(obj);
+            var obj = JSON.parse(o);
+            resolve(obj);
+          });
+        });
+      }
+    }, {
+      key: "writeOnPanel",
+      value: function writeOnPanel(obj) {
+        removeChildren(colorObj);
+        Object.entries(obj).forEach(function (_ref) {
+          var _ref2 = _slicedToArray(_ref, 2),
+              key = _ref2[0],
+              value = _ref2[1];
+
+          writeList(colorObj, value, key);
+        });
+      }
+    }]);
+
+    return WriteData;
+  }();
+
+  var PicFromJsx =
+  /*#__PURE__*/
+  function (_WriteData) {
+    _inherits(PicFromJsx, _WriteData);
+
+    function PicFromJsx(btn) {
+      var _this;
+
+      _classCallCheck(this, PicFromJsx);
+
+      _this = _possibleConstructorReturn(this, _getPrototypeOf(PicFromJsx).call(this));
+      _this.btn = btn;
+
+      _this.btn.addEventListener("click", _assertThisInitialized(_this));
+
+      return _this;
+    }
+
+    _createClass(PicFromJsx, [{
+      key: "handleEvent",
+      value: function () {
+        var _handleEvent = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee() {
+          var obj;
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _context.next = 2;
+                  return this.getSelectedColor();
+
+                case 2:
+                  obj = _context.sent;
+                  this.writeOnPanel(obj);
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        }));
+
+        function handleEvent() {
+          return _handleEvent.apply(this, arguments);
+        }
+
+        return handleEvent;
+      }()
+    }]);
+
+    return PicFromJsx;
+  }(WriteData);
+
+  var write = new PicFromJsx(getColor);
+
+  var PicFromJson =
+  /*#__PURE__*/
+  function (_WriteData2) {
+    _inherits(PicFromJson, _WriteData2);
+
+    function PicFromJson(btn) {
+      var _this2;
+
+      _classCallCheck(this, PicFromJson);
+
+      _this2 = _possibleConstructorReturn(this, _getPrototypeOf(PicFromJson).call(this));
+      _this2.btn = btn;
+
+      _this2.btn.addEventListener("click", _assertThisInitialized(_this2));
+
+      return _this2;
+    }
+
+    _createClass(PicFromJson, [{
+      key: "handleEvent",
+      value: function () {
+        var _handleEvent2 = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee2() {
+          var jsonList, jsonData, obj;
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  jsonList = Array.from(document.getElementsByClassName("jsonList"));
+                  jsonData = document.getElementsByClassName("jsonData");
+                  obj = {};
+                  jsonList.forEach(function (v, i) {
+                    if (v.checked) {
+                      console.log(jsonData[i]);
+                      var dataSet = Array.from(jsonData[i].getElementsByTagName("li"));
+                      dataSet.forEach(function (value) {
+                        console.log(value.dataset.key);
+                        obj[value.dataset.key] = value.dataset.value;
+                      });
+                    }
+                  });
+                  this.writeOnPanel(obj);
+
+                case 5:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this);
+        }));
+
+        function handleEvent() {
+          return _handleEvent2.apply(this, arguments);
+        }
+
+        return handleEvent;
+      }()
+    }]);
+
+    return PicFromJson;
+  }(WriteData);
+
+  console.log(adaptObj);
+  var fromJson = new PicFromJson(adaptObj);
+
+  var DeleteJson =
+  /*#__PURE__*/
+  function (_WriteData3) {
+    _inherits(DeleteJson, _WriteData3);
+
+    function DeleteJson(btn) {
+      var _this3;
+
+      _classCallCheck(this, DeleteJson);
+
+      _this3 = _possibleConstructorReturn(this, _getPrototypeOf(DeleteJson).call(this));
+      _this3.btn = btn;
+
+      _this3.btn.addEventListener("click", _assertThisInitialized(_this3));
+
+      return _this3;
+    }
+
+    _createClass(DeleteJson, [{
+      key: "handleEvent",
+      value: function () {
+        var _handleEvent3 = _asyncToGenerator(
+        /*#__PURE__*/
+        regeneratorRuntime.mark(function _callee3() {
+          var jsonList, index, isChecked;
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  isChecked = function _ref3(value) {
+                    return value.checked == true;
+                  };
+
+                  _context3.next = 3;
+                  return readJson();
+
+                case 3:
+                  jsonList = _context3.sent;
+                  index = Array.from(document.getElementsByClassName("jsonList")).findIndex(isChecked);
+                  console.log(index);
+                  console.log(jsonList[index]);
+                  jsonList.splice(index, 1);
+                  _context3.next = 10;
+                  return writeJson(jsonList);
+
+                case 10:
+                  //this.writeOnPanel(jsonList);
+                  pickJson.loadJson();
+
+                case 11:
+                case "end":
+                  return _context3.stop();
+              }
+            }
+          }, _callee3);
+        }));
+
+        function handleEvent() {
+          return _handleEvent3.apply(this, arguments);
+        }
+
+        return handleEvent;
+      }()
+    }]);
+
+    return DeleteJson;
+  }(WriteData);
+
+  var deBtn = new DeleteJson(deleteBtn);
+  /*
+  getColor.addEventListener("click",()=>{
+      csInterface.evalScript(`$.evalFile("${extensionRoot}readColor.jsx")`,(o)=>{
+          const obj = JSON.parse(o);
+          console.log(obj);
+          removeChildren(colorObj);
+          Object.entries(obj).forEach(([key,value])=>{
+              writeList(colorObj,value,key);
+          });
       });
-    });
   });
+  */
 
   function removeChildren(parent) {
     while (parent.firstChild) {
@@ -199,6 +427,7 @@ window.onload = function () {
         lists.forEach(function (v) {
           colorData[v.dataset.key] = v.dataset.value;
         });
+        console.log(colorData);
         return colorData;
       }
     }]);
@@ -212,15 +441,15 @@ window.onload = function () {
     _inherits(AdoptColor, _CreateColorObj);
 
     function AdoptColor(btn) {
-      var _this;
+      var _this4;
 
       _classCallCheck(this, AdoptColor);
 
-      _this = _possibleConstructorReturn(this, _getPrototypeOf(AdoptColor).call(this, btn));
+      _this4 = _possibleConstructorReturn(this, _getPrototypeOf(AdoptColor).call(this, btn));
 
-      _this.btn.addEventListener("click", _assertThisInitialized(_this));
+      _this4.btn.addEventListener("click", _assertThisInitialized(_this4));
 
-      return _this;
+      return _this4;
     }
 
     _createClass(AdoptColor, [{
@@ -255,58 +484,61 @@ window.onload = function () {
     _inherits(SaveJson, _CreateColorObj2);
 
     function SaveJson(btn) {
-      var _this2;
+      var _this5;
 
       _classCallCheck(this, SaveJson);
 
-      _this2 = _possibleConstructorReturn(this, _getPrototypeOf(SaveJson).call(this, btn));
+      _this5 = _possibleConstructorReturn(this, _getPrototypeOf(SaveJson).call(this, btn));
 
-      _this2.btn.addEventListener("click", _assertThisInitialized(_this2));
+      _this5.btn.addEventListener("click", _assertThisInitialized(_this5));
 
-      return _this2;
+      return _this5;
     }
 
     _createClass(SaveJson, [{
       key: "handleEvent",
       value: function () {
-        var _handleEvent = _asyncToGenerator(
+        var _handleEvent4 = _asyncToGenerator(
         /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee() {
+        regeneratorRuntime.mark(function _callee4() {
           var colorData, jsonList;
-          return regeneratorRuntime.wrap(function _callee$(_context) {
+          return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
-              switch (_context.prev = _context.next) {
+              switch (_context4.prev = _context4.next) {
                 case 0:
                   colorData = this.getColorProp();
                   colorData.name = document.getElementById("colorName").value;
 
                   if (colorData) {
-                    _context.next = 4;
+                    _context4.next = 4;
                     break;
                   }
 
-                  return _context.abrupt("return");
+                  return _context4.abrupt("return");
 
                 case 4:
-                  _context.next = 6;
+                  _context4.next = 6;
                   return readJson();
 
                 case 6:
-                  jsonList = _context.sent;
+                  jsonList = _context4.sent;
                   jsonList.push(colorData);
-                  _context.next = 10;
-                  return writeJson(JsonList);
+                  _context4.next = 10;
+                  return writeJson(jsonList);
 
                 case 10:
+                  this.loadJson();
+
+                case 11:
                 case "end":
-                  return _context.stop();
+                  return _context4.stop();
               }
             }
-          }, _callee, this);
+          }, _callee4, this);
         }));
 
         function handleEvent() {
-          return _handleEvent.apply(this, arguments);
+          return _handleEvent4.apply(this, arguments);
         }
 
         return handleEvent;
@@ -316,17 +548,17 @@ window.onload = function () {
       value: function () {
         var _loadJson = _asyncToGenerator(
         /*#__PURE__*/
-        regeneratorRuntime.mark(function _callee2() {
+        regeneratorRuntime.mark(function _callee5() {
           var jsonList;
-          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          return regeneratorRuntime.wrap(function _callee5$(_context5) {
             while (1) {
-              switch (_context2.prev = _context2.next) {
+              switch (_context5.prev = _context5.next) {
                 case 0:
-                  _context2.next = 2;
+                  _context5.next = 2;
                   return readJson();
 
                 case 2:
-                  jsonList = _context2.sent;
+                  jsonList = _context5.sent;
                   removeChildren(savedList);
                   jsonList.forEach(function (v) {
                     var topLi = document.createElement("li");
@@ -334,11 +566,12 @@ window.onload = function () {
                     var radioBtn = makeRadio();
                     savedList.appendChild(radioBtn);
                     var ul = document.createElement("ul");
+                    ul.classList.add("jsonData");
                     topLi.appendChild(ul);
-                    Object.entries(v).forEach(function (_ref3) {
-                      var _ref4 = _slicedToArray(_ref3, 2),
-                          key = _ref4[0],
-                          value = _ref4[1];
+                    Object.entries(v).forEach(function (_ref4) {
+                      var _ref5 = _slicedToArray(_ref4, 2),
+                          key = _ref5[0],
+                          value = _ref5[1];
 
                       writeList(ul, value, key);
                     });
@@ -346,10 +579,10 @@ window.onload = function () {
 
                 case 5:
                 case "end":
-                  return _context2.stop();
+                  return _context5.stop();
               }
             }
-          }, _callee2);
+          }, _callee5);
         }));
 
         function loadJson() {
@@ -371,6 +604,9 @@ window.onload = function () {
 
     _input.type = "radio";
     _input.name = "preset";
+
+    _input.classList.add("jsonList");
+
     label.appendChild(_input);
     var div = document.createElement("div");
     div.classList.add("topcoat-radio-button__checkmark");
