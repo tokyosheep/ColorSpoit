@@ -21,5 +21,13 @@
         "blue": "0",
         "typename": "RGBColor",
         "name": "yellow"
+    },
+    {
+        "cyan": "95.7885086536407",
+        "magenta": "85.1529657840729",
+        "yellow": "0",
+        "black": "0",
+        "typename": "CMYKColor",
+        "name": "color"
     }
 ]
